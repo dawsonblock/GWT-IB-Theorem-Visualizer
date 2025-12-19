@@ -181,6 +181,28 @@ export const Fig4GateAction: React.FC = () => {
 export const Fig5InternalState: React.FC = () => {
   return (
     <div className="w-full h-80 bg-black/20 rounded-lg border border-white/10 flex items-center justify-center overflow-hidden">
+      <style>
+        {`
+          @keyframes dash {
+            to {
+              stroke-dashoffset: -20;
+            }
+          }
+          .flow-dashed {
+            stroke-dasharray: 5;
+            animation: dash 1s linear infinite;
+          }
+          @keyframes pulse-core {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.05); }
+          }
+          .core-pulse {
+            transform-box: fill-box;
+            transform-origin: center;
+            animation: pulse-core 2s ease-in-out infinite;
+          }
+        `}
+      </style>
       <svg width="600" height="300" viewBox="0 0 600 300">
         <defs>
           <marker id="arrowhead5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
@@ -200,27 +222,33 @@ export const Fig5InternalState: React.FC = () => {
         <g transform="translate(300, 150)">
           <rect x="-60" y="-30" width="120" height="60" rx="8" className="stroke-primary stroke-2 fill-primary/20 shadow-lg" />
           <text x="0" y="-5" textAnchor="middle" className="fill-white text-sm font-bold">LSTM Core</text>
+           {/* Visual Pulse */}
+           <rect x="-60" y="-30" width="120" height="60" rx="8" className="fill-primary core-pulse pointer-events-none" />
+           
           {/* Internal Gates visual hint */}
           <g transform="translate(-40, 10)">
-            <circle cx="0" cy="0" r="4" className="fill-blue-400 opacity-50" />
-            <circle cx="15" cy="0" r="4" className="fill-green-400 opacity-50" />
-            <circle cx="30" cy="0" r="4" className="fill-red-400 opacity-50" />
-            <circle cx="80" cy="0" r="4" className="fill-white opacity-50" />
+            <circle cx="0" cy="0" r="4" className="fill-blue-400 opacity-80" />
+            <circle cx="15" cy="0" r="4" className="fill-green-400 opacity-80" />
+            <circle cx="30" cy="0" r="4" className="fill-red-400 opacity-80" />
+            <circle cx="80" cy="0" r="4" className="fill-white opacity-80" />
           </g>
         </g>
 
         <Node x={500} y={150} label="h_t" sub="Updated Context" color="stroke-blue-500" />
         <Node x={300} y={70} label="X_t" sub="Internal State" color="stroke-green-500" />
 
-        {/* Edges */}
-        <line x1={160} y1={150} x2={240} y2={150} className="stroke-muted stroke-1" markerEnd="url(#arrowhead5)" />
-        <line x1={360} y1={150} x2={440} y2={150} className="stroke-muted stroke-1" markerEnd="url(#arrowhead5)" />
+        {/* Edges with flow animation */}
+        {/* h_t-1 -> LSTM */}
+        <line x1={160} y1={150} x2={240} y2={150} className="stroke-blue-500/50 stroke-2 flow-dashed" markerEnd="url(#arrowhead5)" />
+        
+        {/* LSTM -> h_t */}
+        <line x1={360} y1={150} x2={440} y2={150} className="stroke-blue-500/50 stroke-2 flow-dashed" markerEnd="url(#arrowhead5)" />
         
         {/* O_t -> LSTM */}
-        <line x1={300} y1={200} x2={300} y2={188} className="stroke-muted stroke-1" markerEnd="url(#arrowhead5)" />
+        <line x1={300} y1={200} x2={300} y2={188} className="stroke-slate-500/50 stroke-2 flow-dashed" markerEnd="url(#arrowhead5)" />
         
         {/* LSTM -> X_t */}
-        <line x1={300} y1={120} x2={300} y2={108} className="stroke-muted stroke-1" markerEnd="url(#arrowhead5)" />
+        <line x1={300} y1={120} x2={300} y2={108} className="stroke-green-500/50 stroke-2 flow-dashed" markerEnd="url(#arrowhead5)" />
 
         {/* Recurrence Loop visualization */}
         <path d="M 500 120 C 500 20, 100 20, 100 120" fill="none" className="stroke-blue-500/20 stroke-1 dashed" markerEnd="url(#arrowhead5)" />
