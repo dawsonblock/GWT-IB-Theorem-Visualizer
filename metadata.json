@@ -1,0 +1,5 @@
+{
+  "name": "GWT-IB Theorem Visualizer",
+  "description": "A formal visualization of the Global Workspace Theory ↔ Information Bottleneck equivalence, featuring interactive diagrams, PPO-IB simulations, and ablation study projections.",
+  "requestFramePermissions": []
+}
