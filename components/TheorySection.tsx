@@ -1,6 +1,6 @@
 import React from 'react';
 import { M } from './MathUtils';
-import { Clock, Layers, Zap, BrainCircuit } from 'lucide-react';
+import { Clock, Layers, Zap, BrainCircuit, Activity } from 'lucide-react';
 
 export const TheorySection: React.FC = () => {
   return (
@@ -118,7 +118,7 @@ export const TheorySection: React.FC = () => {
           Surgical Upgrade Checklist
         </h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="bg-surface p-4 rounded-xl border border-white/5 hover:border-primary/30 transition-colors">
             <h3 className="text-sm font-bold text-white mb-2 flex items-center">
               <span className="w-2 h-2 rounded-full bg-red-500 mr-2 animate-pulse" />
@@ -137,6 +137,16 @@ export const TheorySection: React.FC = () => {
             </h3>
             <p className="text-xs text-slate-400">
               Train <M>g(w)</M> using teacher signal <M>Δ</M> from policy divergence under adversarial noise.
+            </p>
+          </div>
+
+          <div className="bg-surface p-4 rounded-xl border border-white/5 hover:border-blue-400/30 transition-colors">
+            <h3 className="text-sm font-bold text-white mb-2 flex items-center">
+              <span className="w-2 h-2 rounded-full bg-blue-400 mr-2" />
+              Temporal Recurrence
+            </h3>
+            <p className="text-xs text-slate-400">
+              Integrate <M>{"LSTM(o_t, h_{t-1})"}</M> to capture partial observability and temporal dependencies.
             </p>
           </div>
         </div>

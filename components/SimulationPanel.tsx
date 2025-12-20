@@ -482,6 +482,38 @@ export const SimulationPanel: React.FC = () => {
           </div>
         </div>
 
+        {/* PPO Stability Chart */}
+        <div className="bg-surface p-6 rounded-xl border border-white/10 shadow-lg">
+           <h3 className="text-lg font-bold text-white flex items-center gap-3 mb-6">
+              <div className="p-1.5 bg-green-400/10 rounded">
+                <Activity size={18} className="text-green-400" />
+              </div>
+              PPO Stability (Importance Sampling Ratio)
+            </h3>
+            <div className="h-40 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                 <LineChart data={data}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                    <XAxis dataKey="step" stroke="#94a3b8" tick={false} axisLine={false} />
+                    <YAxis stroke="#94a3b8" domain={[0.6, 1.4]} fontSize={10} axisLine={false} tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                      itemStyle={{ color: '#f8fafc' }}
+                      formatter={(value: number) => [value.toFixed(4), "Ratio"]}
+                    />
+                    <ReferenceArea y1={0.8} y2={1.2} fill="#10b981" fillOpacity={0.03} />
+                    <ReferenceLine y={1.0} stroke="#f8fafc" strokeDasharray="3 3" strokeOpacity={0.3} />
+                    <ReferenceLine y={0.8} stroke="#f43f5e" strokeDasharray="2 2" strokeOpacity={0.5} label={{ value: 'Lower Clip', fill: '#f43f5e', fontSize: 8, position: 'bottom' }} />
+                    <ReferenceLine y={1.2} stroke="#f43f5e" strokeDasharray="2 2" strokeOpacity={0.5} label={{ value: 'Upper Clip', fill: '#f43f5e', fontSize: 8, position: 'top' }} />
+                    <Line type="monotone" dataKey="ppoRatio" stroke="#4ade80" strokeWidth={3} dot={false} name="r_t(θ)" />
+                 </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <p className="text-[10px] text-muted font-mono mt-4 uppercase tracking-tighter opacity-60">
+               Maintain Trust Region via Constraint: E[r_t(θ)Â_t] ≥ L_clip
+            </p>
+        </div>
+
         {/* Reward Shaping Section */}
         <div className="bg-surface p-6 rounded-xl border border-white/10 shadow-lg">
             <h3 className="text-lg font-bold text-white flex items-center gap-3 mb-6">
@@ -525,68 +557,3 @@ export const SimulationPanel: React.FC = () => {
                             value={shapingGain}
                             onChange={(e) => setShapingGain(parseFloat(e.target.value))}
                             className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-accent"
-                        />
-                    </div>
-                </div>
-
-                <div className="bg-black/20 p-4 rounded-xl border border-white/5 flex flex-col justify-center min-h-[120px]">
-                    <div className="text-[10px] text-muted font-mono uppercase tracking-widest mb-2">Effective Reward Function</div>
-                    <div className="text-center py-2">
-                        {shapingMode === 'sparse' && (
-                             <M block>{"R_t = R_{env} + 0"}</M>
-                        )}
-                        {shapingMode === 'dense' && (
-                             <M block>{`R_t = R_{env} - ${shapingGain.toFixed(2)} \\cdot \\| s_{goal} - s_t \\|_2`}</M>
-                        )}
-                        {shapingMode === 'potential' && (
-                             <M block>{`R_t = R_{env} + ${shapingGain.toFixed(2)} \\cdot (\\Phi(s_{t+1}) - \\Phi(s_t))`}</M>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-2 justify-center mt-2 text-[10px]">
-                         <TrendingUp size={12} className={shapingMode !== 'sparse' ? "text-green-400" : "text-muted"} />
-                         <span className={shapingMode !== 'sparse' ? "text-green-400" : "text-muted"}>
-                             {shapingMode === 'sparse' ? "Baseline Convergence" : "Accelerated Learning"}
-                         </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div className="bg-surface p-6 rounded-xl border border-white/10 shadow-lg">
-           <h3 className="text-lg font-bold text-white flex items-center gap-3 mb-6">
-              <div className="p-1.5 bg-green-400/10 rounded">
-                <Activity size={18} className="text-green-400" />
-              </div>
-              PPO Stability (Importance Sampling Ratio)
-            </h3>
-            <div className="h-40 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                 <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
-                    <XAxis dataKey="step" stroke="#94a3b8" tick={false} axisLine={false} />
-                    <YAxis stroke="#94a3b8" domain={[0.6, 1.4]} fontSize={10} axisLine={false} tickLine={false} />
-                    <Tooltip 
-                      contentStyle={{ backgroundColor: '#1e293b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                      itemStyle={{ color: '#f8fafc' }}
-                      formatter={(value: number) => [value.toFixed(4), "Ratio"]}
-                    />
-                    <ReferenceArea y1={0.8} y2={1.2} fill="#10b981" fillOpacity={0.03} />
-                    <ReferenceLine y={1.0} stroke="#f8fafc" strokeDasharray="3 3" strokeOpacity={0.3} />
-                    <ReferenceLine y={1.2} stroke="#f43f5e" strokeDasharray="2 2" strokeOpacity={0.5} label={{ value: 'Upper Clip', fill: '#f43f5e', fontSize: 8, position: 'top' }} />
-                    <Line type="monotone" dataKey="ppoRatio" stroke="#4ade80" strokeWidth={3} dot={false} name="r_t(θ)" />
-                 </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <p className="text-[10px] text-muted font-mono mt-4 uppercase tracking-tighter opacity-60">
-               Maintain Trust Region via Constraint: E[r_t(θ)Â_t] ≥ L_clip
-            </p>
-        </div>
-
-      </div>
-
-      <div className="lg:col-span-1">
-        {renderGateVisual()}
-      </div>
-    </div>
-  );
-};
